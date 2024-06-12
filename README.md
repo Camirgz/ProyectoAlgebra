@@ -2,7 +2,7 @@
 
 **Descripción del Proyecto**
 
-Desarrollaremos un programa en Java que permita al usuario interactuar con diferentes curvas y cónicas. El programa permitirá la entrada de componentes de la curva elegida, validará los datos ingresados y generará resultados matemáticos y gráficos relacionados con la curva. Este proyecto se realizará en grupos de 4 personas y será presentado en clase.
+Desarrollaremos un programa en Java que permita al usuario interactuar con diferentes curvas y cónicas. El programa permitirá la entrada de componentes de la curva elegida, validará los datos ingresados y generará resultados matemáticos y gráficos relacionados con la curva.
 
 **Requisitos del Programa**
 
@@ -37,10 +37,10 @@ El grupo puede añadir funcionalidades adicionales que mejoren la interactividad
 **Contribuciones**
 
 El proyecto fue desarrollado por un equipo de 4 personas:
-- Miembro 1: Camila Rodríguez
-- Miembro 2: Andrés Salas
-- Miembro 3: Leonardo Sibaja
-- Miembro 4: Melany Alfaro
+- Camila Rodríguez
+-Andrés Salas
+-Leonardo Sibaja
+-Melany Alfaro
 
 **Licencia**
 
