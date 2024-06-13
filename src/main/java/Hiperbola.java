@@ -1,9 +1,28 @@
-import java.util.Scanner;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Path2D;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.EigenDecomposition;
 import org.apache.commons.math3.linear.RealMatrix;
+import java.util.Scanner;
 
-public class Hiperbola {
+public class Hiperbola extends JPanel {
+
+    private double A, B, C, D, E, F;
+
+    public Hiperbola(){
+
+    }
+
+    public Hiperbola(double A, double B, double C, double D, double E, double F) {
+        this.A = A;
+        this.B = B;
+        this.C = C;
+        this.D = D;
+        this.E = E;
+        this.F = F;
+    }
 
     public void menu(Scanner scanner) {
         System.out.println("Ingrese los coeficientes A, B, C, D, E, F para la hipérbola (Ax² + Bxy + Cy² + Dx + Ey + F = 0):");
@@ -23,8 +42,7 @@ public class Hiperbola {
         }
     }
 
-   public static void valores(double A, double B, double C, double D, double E, double F) {
-        
+    public static void valores(double A, double B, double C, double D, double E, double F) {
         // Forma cuadrática, se usa string builder para no mostrar monomios con coeficientes 0
         StringBuilder formaCuadratica = new StringBuilder();
         if (A != 0) formaCuadratica.append(A).append("x² ");
@@ -54,7 +72,7 @@ public class Hiperbola {
 
         System.out.println("Valores propios:");
         for (double valorPropio : valoresPropios) {
-            System.out.printf("%.10f\n", valorPropio); //Redondeo
+            System.out.printf("%.10f\n", valorPropio); // Redondeo
         }
 
         System.out.println("Vectores propios:");
@@ -66,8 +84,61 @@ public class Hiperbola {
         }
     }
    
-   public static void grafica(double A, double B, double C, double D, double E, double F) {
-       System.out.println("Acá debe ir el código de la gráfica");
-   }
+    public static void grafica(double A, double B, double C, double D, double E, double F) {
+        JFrame frame = new JFrame("Gráfica de Hipérbola");
+        Hiperbola panel = new Hiperbola(A, B, C, D, E, F);
+        frame.add(panel);
+        frame.setSize(800, 800);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+    }
 
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        AffineTransform transform = new AffineTransform();
+        transform.scale(1, -1); // Invertir el eje y
+        transform.translate(getWidth() / 2, -getHeight() / 2);
+        g2d.setTransform(transform);
+
+        g2d.setStroke(new BasicStroke(2));
+        g2d.setColor(Color.BLUE);
+
+        // Dibujar el eje X y el eje Y
+        g2d.setColor(Color.LIGHT_GRAY);
+        g2d.drawLine(-getWidth() / 2, 0, getWidth() / 2, 0); // Eje X
+        g2d.drawLine(0, -getHeight() / 2, 0, getHeight() / 2); // Eje Y
+
+        // Dibujar la hipérbola
+        g2d.setColor(Color.RED);
+        Path2D.Double path = new Path2D.Double();
+
+        double step = 0.1;
+        for (double x = -getWidth() / 2; x <= getWidth() / 2; x += step) {
+            double[] yValues = calcularY(x);
+            for (double y : yValues) {
+                if (Double.isFinite(y)) {
+                    path.moveTo(x, y);
+                    path.lineTo(x + step, calcularY(x + step)[0]);
+                }
+            }
+        }
+
+        g2d.draw(path);
+    }
+
+    private double[] calcularY(double x) {
+        double[] yValues = new double[2];
+        double discriminante = B * B - 4 * A * C;
+        double sqrtDiscriminante = Math.sqrt(discriminante);
+        double den = 2 * A;
+        yValues[0] = (-B * x + sqrtDiscriminante) / den;
+        yValues[1] = (-B * x - sqrtDiscriminante) / den;
+        return yValues;
+    }
+
+    
 }
