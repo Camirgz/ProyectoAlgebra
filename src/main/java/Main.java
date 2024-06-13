@@ -23,16 +23,16 @@ public class Main {
             int opcion = scanner.nextInt();
             switch (opcion) {
                 case 1:
-                    parabola.manejarParabola(scanner);
+                    parabola.menu(scanner);
                     break;
                 case 2:
-                    elipse.manejarElipse(scanner);
+                    elipse.menu(scanner);
                     break;
                 case 3:
-                    hiperbola.manejarHiperbola(scanner);
+                    hiperbola.menu(scanner);
                     break;
                 case 4:
-                    circunferencia.manejarCircunferencia(scanner);
+                    circunferencia.menu(scanner);
                     break;
                 case 5:
                     System.out.println("Gracias!");

@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class Parabola {
 
-    public void manejarParabola(Scanner scanner) {
+    public void menu(Scanner scanner) {
         System.out.println("Ingrese los coeficientes A, B, C, D, E, F para la parábola (Ax² + Bxy + Cy² + Dx + Ey + F = 0):");
         double A = scanner.nextDouble();
         double B = scanner.nextDouble();
@@ -16,14 +16,16 @@ public class Parabola {
 
         if (B * B - 4 * A * C == 0) {
             System.out.println("Los coeficientes corresponden a una parábola.");
-            mostrarParabola(A, B, C, D, E, F);
+            valores(A, B, C, D, E, F);
+            grafica(A, B, C, D, E, F);
         } else {
             System.out.println("Los coeficientes ingresados no corresponden a una parábola.");
         }
     }
 
-    public static void mostrarParabola(double A, double B, double C, double D, double E, double F) {
-        // Forma cuadrática
+    public static void valores(double A, double B, double C, double D, double E, double F) {
+        
+        // Forma cuadrática, se usa string builder para no mostrar monomios con coeficientes 0
         StringBuilder formaCuadratica = new StringBuilder();
         if (A != 0) formaCuadratica.append(A).append("x² ");
         if (B != 0) formaCuadratica.append((B > 0 && formaCuadratica.length() > 0 ? "+ " : "")).append(B).append("xy ");
@@ -52,7 +54,7 @@ public class Parabola {
 
         System.out.println("Valores propios:");
         for (double valorPropio : valoresPropios) {
-            System.out.printf("%.10f\n", valorPropio);
+            System.out.printf("%.10f\n", valorPropio); //Redondeo
         }
 
         System.out.println("Vectores propios:");
@@ -63,4 +65,8 @@ public class Parabola {
             System.out.println();
         }
     }
+    
+    public static void grafica(double A, double B, double C, double D, double E, double F) {
+       System.out.println("Acá debe ir el código de la gráfica");
+   }
 }
