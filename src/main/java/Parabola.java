@@ -1,4 +1,9 @@
 import javax.swing.*;
+
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import org.apache.commons.math3.linear.EigenDecomposition;
+import org.apache.commons.math3.linear.RealMatrix;
+
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.Scanner;
@@ -48,9 +53,32 @@ public class Parabola extends JPanel {
 
         System.out.println("Forma cuadrática: " + formaCuadratica.toString().trim());
 
-        // Matriz asociada: No es aplicable para una parábola
+        RealMatrix matriz = new Array2DRowRealMatrix(new double[][] {{A, B / 2}, {B / 2, C}});
+        System.out.println("Matriz asociada:");
+        for (int i = 0; i < matriz.getRowDimension(); i++) {
+            for (int j = 0; j < matriz.getColumnDimension(); j++) {
+                System.out.printf("%.1f ", matriz.getEntry(i, j));
+            }
+            System.out.println();
+        }
 
-        // No se calculan valores propios ni vectores propios para una parábola
+        // Valores propios y vectores propios
+        EigenDecomposition eigenDecomposition = new EigenDecomposition(matriz);
+        double[] valoresPropios = eigenDecomposition.getRealEigenvalues();
+        RealMatrix vectoresPropios = eigenDecomposition.getV();
+
+        System.out.println("Valores propios:");
+        for (double valorPropio : valoresPropios) {
+            System.out.printf("%.10f\n", valorPropio); // Redondeo
+        }
+
+        System.out.println("Vectores propios:");
+        for (int i = 0; i < vectoresPropios.getRowDimension(); i++) {
+            for (int j = 0; j < vectoresPropios.getColumnDimension(); j++) {
+                System.out.printf("%.10f ", vectoresPropios.getEntry(i, j));
+            }
+            System.out.println();
+        }
     }
 
     public static void grafica(double A, double B, double C, double D, double E, double F) {
