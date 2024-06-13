@@ -1,13 +1,31 @@
-import java.util.Scanner;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Path2D;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.EigenDecomposition;
 import org.apache.commons.math3.linear.RealMatrix;
+import java.util.Scanner;
 
+public class Circunferencia extends JPanel {
 
-public class Circunferencia {
-    
+    private double A, B, C, D, E, F;
+
+    public Circunferencia() {
+
+    }
+
+    public Circunferencia(double A, double B, double C, double D, double E, double F) {
+        this.A = A;
+        this.B = B;
+        this.C = C;
+        this.D = D;
+        this.E = E;
+        this.F = F;
+    }
+
     public void menu(Scanner scanner) {
-        System.out.println("Ingrese los coeficientes A, B, C, D, E, F para la hipérbola (Ax² + Bxy + Cy² + Dx + Ey + F = 0):");
+        System.out.println("Ingrese los coeficientes A, B, C, D, E, F para la circunferencia (Ax² + Bxy + Cy² + Dx + Ey + F = 0):");
         double A = scanner.nextDouble();
         double B = scanner.nextDouble();
         double C = scanner.nextDouble();
@@ -25,8 +43,7 @@ public class Circunferencia {
     }
 
     public static void valores(double A, double B, double C, double D, double E, double F) {
-        
-        // Forma cuadrática, se usa string builder para no mostrar monomios con coeficientes 0
+        // Forma cuadrática
         StringBuilder formaCuadratica = new StringBuilder();
         if (A != 0) formaCuadratica.append(A).append("x² ");
         if (B != 0) formaCuadratica.append((B > 0 && formaCuadratica.length() > 0 ? "+ " : "")).append(B).append("xy ");
@@ -55,7 +72,7 @@ public class Circunferencia {
 
         System.out.println("Valores propios:");
         for (double valorPropio : valoresPropios) {
-            System.out.printf("%.10f\n", valorPropio); //Redondeo
+            System.out.printf("%.10f\n", valorPropio); // Redondeo
         }
 
         System.out.println("Vectores propios:");
@@ -66,8 +83,51 @@ public class Circunferencia {
             System.out.println();
         }
     }
-    
+   
     public static void grafica(double A, double B, double C, double D, double E, double F) {
-       System.out.println("Acá debe ir el código de la gráfica");
-   }
+        JFrame frame = new JFrame("Gráfica de Circunferencia");
+        Circunferencia panel = new Circunferencia(A, B, C, D, E, F);
+        frame.add(panel);
+        frame.setSize(800, 800);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        AffineTransform transform = new AffineTransform();
+        transform.scale(1, -1); // Invertir el eje y
+        transform.translate(getWidth() / 2, -getHeight() / 2);
+        g2d.setTransform(transform);
+
+        g2d.setStroke(new BasicStroke(2));
+        g2d.setColor(Color.BLUE);
+
+        // Dibujar el eje X y el eje Y
+        g2d.setColor(Color.LIGHT_GRAY);
+        g2d.drawLine(-getWidth() / 2, 0, getWidth() / 2, 0); // Eje X
+        g2d.drawLine(0, -getHeight() / 2, 0, getHeight() / 2); // Eje Y
+
+        // Dibujar la circunferencia
+        g2d.setColor(Color.RED);
+        double radio = Math.sqrt(-F);
+        double centroX = -D / (2 * A);
+        double centroY = -E / (2 * C);
+        double xInicial = centroX + radio;
+        double yInicial = centroY;
+        Path2D.Double path = new Path2D.Double();
+        path.moveTo(xInicial, yInicial);
+        for (double t = 0; t <= 2 * Math.PI; t += 0.1) {
+            double x = centroX + radio * Math.cos(t);
+            double y = centroY + radio * Math.sin(t);
+            path.lineTo(x, y);
+        }
+        path.closePath();
+        g2d.draw(path);
+    }
+
 }
