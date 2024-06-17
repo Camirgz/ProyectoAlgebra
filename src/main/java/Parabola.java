@@ -85,11 +85,12 @@ public class Parabola extends JPanel {
         JFrame frame = new JFrame("Gráfica de Parábola");
         Parabola panel = new Parabola(A, B, C, D, E, F);
         frame.add(panel);
-        frame.setSize(800, 800);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }
 
+    
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -99,19 +100,40 @@ public class Parabola extends JPanel {
         // Configuración de la transformación para dibujar la parábola centrada
         AffineTransform transform = new AffineTransform();
         transform.translate(getWidth() / 2, getHeight() / 2); // Centrar en el panel
-        transform.scale(1, -1); // Invertir el eje y
+        transform.scale(3, -3); // Invertir el eje y y ajustar la escala para alejar la vista
         g2d.setTransform(transform);
 
+        // Dibujar ejes coordenados
+        g2d.setStroke(new BasicStroke(1));
+        g2d.setColor(Color.LIGHT_GRAY);
+
+        // Dibujar cuadrícula
+        int gridSpacing = 20;
+        for (int i = -getWidth() / 2; i <= getWidth() / 2; i += gridSpacing) {
+            g2d.drawLine(i, -getHeight() / 2, i, getHeight() / 2);
+        }
+        for (int i = -getHeight() / 2; i <= getHeight() / 2; i += gridSpacing) {
+            g2d.drawLine(-getWidth() / 2, i, getWidth() / 2, i);
+        }
+
+        // Dibujar ejes
+        g2d.setStroke(new BasicStroke(2));
+        g2d.setColor(Color.BLACK);
+        g2d.drawLine(-getWidth() / 2, 0, getWidth() / 2, 0); // Eje X
+        g2d.drawLine(0, -getHeight() / 2, 0, getHeight() / 2); // Eje Y
+
+
+        // Dibujar la parábola
         g2d.setStroke(new BasicStroke(2));
         g2d.setColor(Color.RED);
 
-        double step = 0.1;
-        double xAnterior = -getWidth() / 2;
-        double yAnterior = 0;
+        double step = 0.01; // Reducir el paso para suavizar la línea
+        double xAnterior = -getWidth() / 2 / 3; // Ajustar el valor inicial de x según la escala
+        double yAnterior = calculateY(xAnterior);
 
-        for (double x = -getWidth() / 2 + step; x <= getWidth() / 2; x += step) {
+        for (double x = -getWidth() / 2 / 3 + step; x <= getWidth() / 2 / 3; x += step) {
             double y = calculateY(x);
-            g2d.drawLine((int) xAnterior, (int) yAnterior, (int) x, (int) y);
+            g2d.drawLine((int) (xAnterior * 3), (int) (yAnterior * 3), (int) (x * 3), (int) (y * 3)); // Ajustar según la escala
             xAnterior = x;
             yAnterior = y;
         }
@@ -125,9 +147,7 @@ public class Parabola extends JPanel {
         double y1 = (-B * x + sqrtDiscriminante) / den;
         double y2 = (-B * x - sqrtDiscriminante) / den;
 
-        // Elegir el valor de y correcto basado en la ubicación de la parábola
-        // Puedes elegir el valor que necesites dependiendo de tu gráfica
-        // Aquí se elige el valor más cercano al eje x
+
         double y = Math.abs(y1) < Math.abs(y2) ? y1 : y2;
 
         // Aplicar la ecuación general de la parábola para obtener la coordenada y
