@@ -8,10 +8,13 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.Scanner;
 
-public class Parabola extends JPanel {
+import java.util.InputMismatchException;
 
+public class Parabola extends JPanel {
+    //coeficietes de la ecuación general
     private double A, B, C, D, E, F;
 
+    
     public Parabola(){}
     public Parabola(double A, double B, double C, double D, double E, double F) {
         this.A = A;
@@ -23,25 +26,41 @@ public class Parabola extends JPanel {
     }
 
     public void menu(Scanner scanner) {
-        System.out.println("Ingrese los coeficientes A, B, C, D, E, F para la parábola (Ax² + Bxy + Cy² + Dx + Ey + F = 0):");
-        double A = scanner.nextDouble();
-        double B = scanner.nextDouble();
-        double C = scanner.nextDouble();
-        double D = scanner.nextDouble();
-        double E = scanner.nextDouble();
-        double F = scanner.nextDouble();
+        boolean entrada = false;
+        while(!entrada){
+        try{
+            System.out.println("Ingrese los coeficientes A, B, C, D, E, F para la parábola (Ax² + Bxy + Cy² + Dx + Ey + F = 0):");
+            double A = scanner.nextDouble();
+            double B = scanner.nextDouble();
+            double C = scanner.nextDouble();
+            double D = scanner.nextDouble();
+            double E = scanner.nextDouble();
+            double F = scanner.nextDouble();
 
-        if (B * B - 4 * A * C == 0) {
-            System.out.println("Los coeficientes corresponden a una parábola.");
-            valores(A, B, C, D, E, F);
-            grafica(A, B, C, D, E, F);
-        } else {
-            System.out.println("Los coeficientes ingresados no corresponden a una parábola.");
+            //Calculamos el discriminante apartir de los coeficientes brindados por el usuario
+            //Si el discriminante es igual a 0, se confirma que los coeficientes corresponden a una parábola.
+            if (B * B - 4 * A * C == 0) {
+                System.out.println("Los coeficientes corresponden a una parábola.");
+                valores(A, B, C, D, E, F);
+                grafica(A, B, C, D, E, F);
+                entrada=true; //salir del while 
+
+            } else {
+                System.out.println("Los coeficientes ingresados no corresponden a una parábola.");
+            }
         }
+        catch (InputMismatchException e) {
+            System.out.println("Error: Por favor, ingrese valores numéricos válidos.");
+            scanner.nextLine(); // Limpiar el buffer 
+        } catch (Exception e) {
+            System.out.println("Se ha producido un error inesperado: " + e.getMessage());
     }
-
+  }
+}
     public static void valores(double A, double B, double C, double D, double E, double F) {
-        // Forma cuadrática, se usa string builder para no mostrar monomios con coeficientes 0
+        //Sección para la forma cúadratica 
+        // se usa string builder para no mostrar monomios con coeficientes 0
+        //así como para separarlos correctamente con '+'
         StringBuilder formaCuadratica = new StringBuilder();
         if (A != 0) formaCuadratica.append(A).append("x² ");
         if (B != 0) formaCuadratica.append((B > 0 && formaCuadratica.length() > 0 ? "+ " : "")).append(B).append("xy ");
@@ -50,9 +69,10 @@ public class Parabola extends JPanel {
         if (E != 0) formaCuadratica.append((E > 0 && formaCuadratica.length() > 0 ? "+ " : "")).append(E).append("y ");
         if (F != 0) formaCuadratica.append((F > 0 && formaCuadratica.length() > 0 ? "+ " : "")).append(F).append(" ");
         formaCuadratica.append("= 0");
-
+        //usamos .trim() para eliminar espacios en blanco al principio y al final del string
         System.out.println("Forma cuadrática: " + formaCuadratica.toString().trim());
 
+        // Matriz asociada a la forma cuadrática
         RealMatrix matriz = new Array2DRowRealMatrix(new double[][] {{A, B / 2}, {B / 2, C}});
         System.out.println("Matriz asociada:");
         for (int i = 0; i < matriz.getRowDimension(); i++) {
@@ -81,6 +101,7 @@ public class Parabola extends JPanel {
         }
     }
 
+    //creamos una ventana gráfica utilizando JFrame
     public static void grafica(double A, double B, double C, double D, double E, double F) {
         JFrame frame = new JFrame("Gráfica de Parábola");
         Parabola panel = new Parabola(A, B, C, D, E, F);
