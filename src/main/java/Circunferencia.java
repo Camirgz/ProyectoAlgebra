@@ -55,6 +55,11 @@ public class Circunferencia extends JPanel {
         
         System.out.println("Forma cuadrática: " + formaCuadratica.toString().trim());
 
+        //llamamos al método calcularCánonica que nos devuelve un array con el el centro h,k y el radio
+        double[] canonica = calcularFormaCanonica(A,C, D, E, F);
+        if (canonica != null) {
+            System.out.printf("Forma canónica: (x - %.2f)² + (y - %.2f)² = %.2f²\n", canonica[0], canonica[1], canonica[2]);
+        }
         // Matriz asociada
         RealMatrix matriz = new Array2DRowRealMatrix(new double[][] {{A, B / 2}, {B / 2, C}});
         System.out.println("Matriz asociada:");
@@ -84,6 +89,26 @@ public class Circunferencia extends JPanel {
         }
     }
    
+    //método para calcular la forma cánonica de la circunferencia
+    //Toma como parametros los coeficientes correspondiente a la ecuación cúadratica de la circunferencia
+    public static double[] calcularFormaCanonica(double A, double C, double D, double E, double F) {
+        //completamos cuadrados para encontrar el centro de la circunferencia
+        //completamos cuadrado en x
+        double h = -D / (2 * A);
+        //completamos cuadrado en y
+        double k = -E / (2 * A);
+        //calculamos el radio al cuadrado 
+        double radio = (D * D + E * E - 4 * A * F) / (4 * A * A);
+
+        if (radio < 0) {
+            return null; // Circunferencia no válida (radio imaginario)
+        }
+        //aplicamos raiz para obtener el radio
+        double r = Math.sqrt(radio);
+        //retornamos array {x,y,r}
+        return new double[] {h, k, r};
+    }
+
     public static void grafica(double A, double B, double C, double D, double E, double F) {
         JFrame frame = new JFrame("Gráfica de Circunferencia");
         Circunferencia panel = new Circunferencia(A, B, C, D, E, F);
