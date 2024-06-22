@@ -12,6 +12,7 @@ import java.util.Scanner;
 public class Circunferencia extends JPanel {
 
     private double A, B, C, D, E, F;
+    private double h, k, r;
 
     public Circunferencia() {
     }
@@ -23,30 +24,37 @@ public class Circunferencia extends JPanel {
         this.D = D;
         this.E = E;
         this.F = F;
+
+        double[] canonica = calcularFormaCanonica(A, C, D, E, F);
+        if (canonica != null) {
+            this.h = canonica[0];
+            this.k = canonica[1];
+            this.r = canonica[2];
+        } else {
+            throw new IllegalArgumentException("Los coeficientes proporcionados no forman una circunferencia válida.");
+        }
     }
 
     public void menu(Scanner scanner) {
+        try {
+            System.out.println("Ingrese los coeficientes A, B, C, D, E, F para la circunferencia (Ax² + Bxy + Cy² + Dx + Ey + F = 0):");
+            double A = scanner.nextDouble();
+            double B = scanner.nextDouble();
+            double C = scanner.nextDouble();
+            double D = scanner.nextDouble();
+            double E = scanner.nextDouble();
+            double F = scanner.nextDouble();
 
-        try{
-        System.out.println("Ingrese los coeficientes A, B, C, D, E, F para la circunferencia (Ax² + Bxy + Cy² + Dx + Ey + F = 0):");
-        double A = scanner.nextDouble();
-        double B = scanner.nextDouble();
-        double C = scanner.nextDouble();
-        double D = scanner.nextDouble();
-        double E = scanner.nextDouble();
-        double F = scanner.nextDouble();
-
-        if (A == C && B == 0) {
-            System.out.println("Los coeficientes corresponden a una circunferencia.");
-            valores(A, B, C, D, E, F);
-            grafica(A, B, C, D, E, F);
-        } else {
+            if (A == C && B == 0) {
+                System.out.println("Los coeficientes corresponden a una circunferencia.");
+                valores(A, B, C, D, E, F);
+                grafica(A, B, C, D, E, F);
+            } else {
                 System.out.println("Los coeficientes ingresados no corresponden a una circunferencia.");
             }
-        }
-        catch (InputMismatchException e) {
+        } catch (InputMismatchException e) {
             System.out.println("Error: Por favor, ingrese valores numéricos válidos.");
-            scanner.nextLine(); // Limpiar el buffer 
+            scanner.nextLine(); // Limpiar el buffer
         } catch (Exception e) {
             System.out.println("Se ha producido un error inesperado: " + e.getMessage());
         }
@@ -66,7 +74,7 @@ public class Circunferencia extends JPanel {
         System.out.println("Forma cuadrática: " + formaCuadratica.toString().trim());
 
         //llamamos al método calcularCánonica que nos devuelve un array con el el centro h,k y el radio
-        double[] canonica = calcularFormaCanonica(A,C, D, E, F);
+        double[] canonica = calcularFormaCanonica(A, C, D, E, F);
         if (canonica != null) {
             System.out.printf("Forma canónica: (x - %.2f)² + (y - %.2f)² = %.2f²\n", canonica[0], canonica[1], canonica[2]);
         }
@@ -99,7 +107,7 @@ public class Circunferencia extends JPanel {
             System.out.println();
         }
     }
-   
+
     //método para calcular la forma cánonica de la circunferencia
     //Toma como parametros los coeficientes correspondiente a la ecuación cúadratica de la circunferencia
     public static double[] calcularFormaCanonica(double A, double C, double D, double E, double F) {
@@ -108,7 +116,7 @@ public class Circunferencia extends JPanel {
         double h = -D / (2 * A);
         //completamos cuadrado en y
         double k = -E / (2 * A);
-        //calculamos el radio al cuadrado 
+        //calculamos el radio al cuadrado
         double radio = (D * D + E * E - 4 * A * F) / (4 * A * A);
 
         if (radio < 0) {
@@ -117,14 +125,14 @@ public class Circunferencia extends JPanel {
         //aplicamos raiz para obtener el radio
         double r = Math.sqrt(radio);
         //retornamos array {x,y,r}
-        return new double[] {h, k, r};
+        return new double[]{h, k, r};
     }
 
     public static void grafica(double A, double B, double C, double D, double E, double F) {
         JFrame frame = new JFrame("Gráfica de Circunferencia");
         Circunferencia panel = new Circunferencia(A, B, C, D, E, F);
         frame.add(panel);
-        frame.setSize(1000,1000); // Tamaño inicial
+        frame.setSize(1000, 1000); // Tamaño inicial
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }
@@ -135,12 +143,16 @@ public class Circunferencia extends JPanel {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        double radio = Math.sqrt(-F / A);
-        double centroX = -D / (2 * A);
-        double centroY = -E / (2 * C);
+        double centroX = this.h;
+        double centroY = this.k;
+        double radio = this.r;
 
         // Escala en base al tamaño del panel
         double escala = Math.min(getWidth(), getHeight()) / (2 * radio + 100); // Márgenes
+        if (Double.isInfinite(escala) || Double.isNaN(escala)) {
+            System.out.println("Error: La escala calculada es infinita o NaN.");
+            return;
+        }
 
         AffineTransform transform = new AffineTransform();
         transform.scale(escala, -escala); // Invertir el eje y
@@ -162,7 +174,6 @@ public class Circunferencia extends JPanel {
         }
         path.closePath();
         g2d.draw(path);
-        
         g2d.setColor(Color.lightGray);
         g2d.setStroke(new BasicStroke(1)); // Grosor de las líneas
         g2d.drawLine(getWidth() / 2, 0, -getWidth() / 2, 0); // Eje X
@@ -194,15 +205,11 @@ public class Circunferencia extends JPanel {
                 g2d.drawString(String.valueOf(y), getWidth() / 2 -10, posY + 14); // Ajuste para que esté encima del eje Y
             }//sume o reste a posY para moverlo
         }
-        
-  
     }
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         Circunferencia circunferencia = new Circunferencia();
         circunferencia.menu(scanner);
-        //inserte como ejemplo el siguiente :)
-        //1 0 1 -4 -4 -5
     }
 }
