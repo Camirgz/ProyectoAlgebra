@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.InputMismatchException;
 
 public class Main {
     public static void main(String[] args) {
@@ -13,6 +14,7 @@ public class Main {
         
         //Menu
         while (continuar) {
+        try {
             System.out.println("Seleccione el tipo de cónica:");
             System.out.println("1. Parábola");
             System.out.println("2. Elipse");
@@ -40,6 +42,12 @@ public class Main {
                     break;
                 default:
                     System.out.println("Opción no válida. Intente de nuevo.");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Entrada no válida. Por favor, ingrese un número.");
+                scanner.next(); // Limpiar el buffer del scanner
+            } catch (Exception e) {
+                System.out.println("Ocurrió un error inesperado: " + e.getMessage());
             }
         }
         scanner.close();
