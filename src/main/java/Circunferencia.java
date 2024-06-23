@@ -31,7 +31,7 @@ public class Circunferencia extends JPanel {
             this.k = canonica[1];
             this.r = canonica[2];
         } else {
-            throw new IllegalArgumentException("Los coeficientes proporcionados no forman una circunferencia válida.");
+            throw new IllegalArgumentException("Los coeficientes proporcionados no forman una circunferencia válida, el radio es menor que 0");
         }
     }
 
@@ -124,6 +124,12 @@ public class Circunferencia extends JPanel {
         }
         //aplicamos raiz para obtener el radio
         double r = Math.sqrt(radio);
+
+        if (r == 0) {
+            throw new IllegalArgumentException("El radio de la circunferencia es 0, no se puede graficar.");
+        }
+
+    
         //retornamos array {x,y,r}
         return new double[]{h, k, r};
     }
@@ -161,10 +167,10 @@ public class Circunferencia extends JPanel {
 
         // Dibujar ejes
         g2d.setColor(Color.BLACK);
-        g2d.setStroke(new BasicStroke(2)); // Grosor de las líneas
+        g2d.setStroke(new BasicStroke(1)); // Grosor de las líneas
 
         // Dibujar la circunferencia
-        g2d.setColor(Color.RED);
+        g2d.setColor(Color.BLUE);
         Path2D.Double path = new Path2D.Double();
         path.moveTo(centroX + radio, centroY);
         for (double t = 0; t <= 2 * Math.PI; t += 0.1) {
