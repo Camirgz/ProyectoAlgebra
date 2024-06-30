@@ -160,14 +160,19 @@ public class Circunferencia extends JPanel {
             return;
         }
 
+        if (radio <= 1) {
+            g2d.setStroke(new BasicStroke(0.5f)); // Ajuste del grosor para radios pequeños
+            System.out.println("Aviso: El radio de la circunferencia es muy pequeño.");
+        } else {
+            g2d.setStroke(new BasicStroke(1.5f)); // Grosor estándar
+        }
+
         AffineTransform transform = new AffineTransform();
         transform.scale(escala, -escala); // Invertir el eje y
         transform.translate(getWidth() / (2 * escala) - centroX, -getHeight() / (2 * escala) - centroY);
         g2d.setTransform(transform);
 
-        // Dibujar ejes
-        g2d.setColor(Color.BLACK);
-        g2d.setStroke(new BasicStroke(1)); // Grosor de las líneas
+        
 
         // Dibujar la circunferencia
         g2d.setColor(Color.BLUE);
@@ -199,7 +204,7 @@ public class Circunferencia extends JPanel {
         for (int x = -getWidth() / (2 * (int) escala); x <= getWidth() / (2 * (int) escala); x += paso+5) {
             if (x != 0) {
                 int posX = (int) (x * escala + getWidth() / 2);
-                g2d.drawString(String.valueOf(x), posX - 16, getHeight() / 2 + 12); // Ajuste para que esté encima del eje X
+                g2d.drawString(String.valueOf(x), posX , getHeight() / 2 ); // Ajuste para que esté encima del eje X
                 //sume o reste a posX para moverlo
             }
         }
@@ -208,7 +213,7 @@ public class Circunferencia extends JPanel {
         for (int y = -getHeight() / (2 * (int) escala); y <= getHeight() / (2 * (int) escala); y += paso+5) {
             if (y != 0) {
                 int posY = (int) (-y * escala + getHeight() / 2);
-                g2d.drawString(String.valueOf(y), getWidth() / 2 -10, posY + 14); // Ajuste para que esté encima del eje Y
+                g2d.drawString(String.valueOf(y), getWidth() / 2 , posY); // Ajuste para que esté encima del eje Y
             }//sume o reste a posY para moverlo
         }
     }
