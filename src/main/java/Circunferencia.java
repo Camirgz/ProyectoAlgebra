@@ -12,6 +12,7 @@ import java.util.Scanner;
 public class Circunferencia extends JPanel {
 
     private double A, B, C, D, E, F;
+    //establecemos variables para el centro de la circunferencia (h,k) y su radio
     private double h, k, r;
 
     public Circunferencia() {
@@ -25,15 +26,18 @@ public class Circunferencia extends JPanel {
         this.E = E;
         this.F = F;
 
-        double[] canonica = calcularFormaCanonica(A, C, D, E, F);
+        //Revisamos que no solo cumpla con la condición A=C para ser circunferencia
+        //Si no que también estos formen una circunferencia válida desde un inicio 
+
+     double[] canonica = calcularFormaCanonica(A, C, D, E, F);
         if (canonica != null) {
-            this.h = canonica[0];
-            this.k = canonica[1];
-            this.r = canonica[2];
-        } else {
-            throw new IllegalArgumentException("Los coeficientes proporcionados no forman una circunferencia válida, el radio es menor que 0");
-        }
+              this.h = canonica[0];
+             this.k = canonica[1];
+             this.r = canonica[2];
+          } else {
+            throw new IllegalArgumentException("Los coeficientes proporcionados no forman una circunferencia válida, el radio es menor o igual que 0");
     }
+ }
 
     public void menu(Scanner scanner) {
         try {
@@ -73,11 +77,13 @@ public class Circunferencia extends JPanel {
 
         System.out.println("Forma cuadrática: " + formaCuadratica.toString().trim());
 
-        //llamamos al método calcularCánonica que nos devuelve un array con el el centro h,k y el radio
+        
+        //con las coordenadas del centro y el radio formamos la forma cánonica:(x-h)²+(y-)²=r² de una circunferencia
         double[] canonica = calcularFormaCanonica(A, C, D, E, F);
         if (canonica != null) {
             System.out.printf("Forma canónica: (x - %.2f)² + (y - %.2f)² = %.2f²\n", canonica[0], canonica[1], canonica[2]);
         }
+
         // Matriz asociada
         double[][] matrizDatos = {{A, B / 2}, {B / 2, C}};
         RealMatrix matriz = new Array2DRowRealMatrix(matrizDatos);
@@ -108,28 +114,31 @@ public class Circunferencia extends JPanel {
         }
     }
 
-    //método para calcular la forma cánonica de la circunferencia
-    //Toma como parametros los coeficientes correspondiente a la ecuación cúadratica de la circunferencia
-    public static double[] calcularFormaCanonica(double A, double C, double D, double E, double F) {
-        //completamos cuadrados para encontrar el centro de la circunferencia
-        //completamos cuadrado en x
-        double h = -D / (2 * A);
-        //completamos cuadrado en y
-        double k = -E / (2 * A);
-        //calculamos el radio al cuadrado
-        double radio = (D * D + E * E - 4 * A * F) / (4 * A * A);
+    //@param: coeficientes de la forma cúadratica de la circunferencia
+    //retorna double[] con los valores correspondientes a la coordenas del centro de la circunferencia y el radio
 
-        if (radio < 0) {
-            return null; // Circunferencia no válida (radio imaginario)
+    //Apartir de la ecuación cuádratica de la circunferencia, pasamos a la ecuación general, 
+    //utilizamos las fórmulas para el centro y radio de la ecuación general
+    public static double[] calcularFormaCanonica(double A, double C, double D, double E, double F) {
+      
+        //obtenemos coordenada x del centro 
+        double h = -D / (2 * A);
+        
+        //obtenemos coordenada y del centro
+        double k = -E / (2 * A);
+
+        //Fórmula que nos da el radio al cuadrado
+        double radio = (D * D + E * E - 4 * A* F) / (4 * A * A);
+
+
+        //la ecuación no corresponde a una circunferencia si el radio es menor que cero, y si es 0, sí es válida pero no existe y no se puede graficar
+        if (radio <= 0) {
+            return null; 
         }
+
         //aplicamos raiz para obtener el radio
         double r = Math.sqrt(radio);
 
-        if (r == 0) {
-            throw new IllegalArgumentException("El radio de la circunferencia es 0, no se puede graficar.");
-        }
-
-    
         //retornamos array {x,y,r}
         return new double[]{h, k, r};
     }
